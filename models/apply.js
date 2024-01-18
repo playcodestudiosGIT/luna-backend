@@ -25,6 +25,10 @@ const ApplySchema = Schema({
         type: String,
         required: [true, 'La Especialidad es requerido'],
     },
+    ss: {
+        type: String,
+        require: [true, 'El Social Security es requerido']
+    },
     idFileUrl: {
         type: String,
         require: [true, 'El ID es requerido']
@@ -32,10 +36,6 @@ const ApplySchema = Schema({
     itinFileUrl: {
         type: String,
         require: [true, 'El ITIN es requerido']
-    },
-    ssFileUrl: {
-        type: String,
-        require: [true, 'El Social Security es requerido']
     },
     osha10FileUrl: {
         type: String,

@@ -9,16 +9,37 @@ cloudinary.config(process.env.CLOUDINARY_URL);
 
 const crearApply = async (req, res = response) => {
 
-    const { fileId, fileItin, fileSs, fileOsha } = req.files;
-    const { nombre, apellido, email, direccion, telf, specialty } = req.body;
+    const { fileId, fileItin, fileOsha } = req.files;
+    const { nombre, apellido, email, direccion, telf, specialty, ss } = req.body;
 
     try {
 
-        const idUrl = await cloudinary.uploader.upload(fileId.tempFilePath, { folder: `luna-files/${email}` });
-        const itinUrl = await cloudinary.uploader.upload(fileItin.tempFilePath, { folder: `luna-files/${email}` });
-        const ssUrl = await cloudinary.uploader.upload(fileSs.tempFilePath, { folder: `luna-files/${email}` });
-        const osha10Url = await cloudinary.uploader.upload(fileOsha.tempFilePath, { folder: `luna-files/${email}` });
 
+
+        var idUrl = 'https://creative-assets.mailinblue.com/editor/image_placeholder.png';
+        var itinUrl = 'https://creative-assets.mailinblue.com/editor/image_placeholder.png';
+        var osha10Url = 'https://creative-assets.mailinblue.com/editor/image_placeholder.png';
+
+        try {
+            const respid = await cloudinary.uploader.upload(fileId.tempFilePath, { folder: `luna-files/${email}` });
+            idUrl = respid.secure_url
+        } catch (error) {
+            
+        }
+
+        try {
+            const respitin = await cloudinary.uploader.upload(fileItin.tempFilePath, { folder: `luna-files/${email}` });
+            itinUrl = respitin.secure_url
+        } catch (error) {
+            
+        }
+
+        try {
+            const resposha = await cloudinary.uploader.upload(fileOsha.tempFilePath, { folder: `luna-files/${email}` });
+            osha10Url = resposha.secure_url
+        } catch (error) {
+            
+        }
 
         const data = {
             nombre,
@@ -27,19 +48,27 @@ const crearApply = async (req, res = response) => {
             direccion,
             telf,
             specialty,
-            idFileUrl: idUrl.secure_url,
-            itinFileUrl: itinUrl.secure_url,
-            ssFileUrl: ssUrl.secure_url,
-            osha10FileUrl: osha10Url.secure_url
+            ss,
+            idFileUrl: idUrl,
+            itinFileUrl: itinUrl,
+            osha10FileUrl: osha10Url
         }
+
+        // console.log(data);
 
         const apply = new Apply(data);
 
 
         // Guardar DB
+
         await apply.save();
 
-        await sendOneEmail(data.nombre, data.apellido, data.email, data.direccion, data.telf, data.specialty, data.idFileUrl, data.itinFileUrl, data.ssFileUrl, data.osha10FileUrl);
+
+        try {
+            await sendOneEmail(data.nombre, data.apellido, data.email, data.direccion, data.telf, data.specialty, data.idFileUrl, data.itinFileUrl, data.ssFileUrl, data.osha10FileUrl);
+        } catch (error) {
+            console.log(error)
+        }
 
 
         return res.status(201).json({
@@ -48,6 +77,7 @@ const crearApply = async (req, res = response) => {
         });
 
     } catch (error) {
+        console.log(error)
         res.json({
             msg: `error crear apply ${error}`
         })

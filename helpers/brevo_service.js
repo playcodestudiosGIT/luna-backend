@@ -6,7 +6,7 @@ const SibApiV3Sdk = require('sib-api-v3-sdk');
 
 
 
-const sendOneEmail = async (nombre, apellido, correo, direccion, telf, especialidad, id, init, ss, osha10) => {
+const sendOneEmail = async (nombre, apellido, correo, direccion, telf, especialidad, id, itin, ss, osha10) => {
   const defaultClient = SibApiV3Sdk.ApiClient.instance;
   const apiKey = defaultClient.authentications['api-key'];
   const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
@@ -27,7 +27,7 @@ const sendOneEmail = async (nombre, apellido, correo, direccion, telf, especiali
       DIRECCION: direccion,
       ESPECIALIDAD: especialidad,
       ID: id,
-      INIT: init,
+      ITIN: itin,
       SS: ss,
       OSHA10: osha10,
     },
